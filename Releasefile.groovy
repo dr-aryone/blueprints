@@ -1,6 +1,6 @@
 // Exported from:        https://xl-release.xebialabs.com/#/templates/Folderdbce503315164ec3848b3058fcb37524-Releasea6867c97994c4ddc9671845ef0ed0de4/releasefile
 // XL Release version:   8.6.1
-// Date created:         Thu Apr 11 16:29:34 CEST 2019
+// Date created:         Thu Apr 11 16:53:46 CEST 2019
 
 xlr {
   template('Release Blueprints') {
@@ -8,6 +8,9 @@ xlr {
     variables {
       stringVariable('BLUEPRINTS_VERSION') {
         label 'Blueprints Version'
+      }
+      integerVariable('PR_NUMBER') {
+        
       }
     }
     scheduledStartDate Date.parse("yyyy-MM-dd'T'HH:mm:ssZ", '2019-04-08T09:00:00+0200')
@@ -55,12 +58,19 @@ if repo['last_build_state'] != "passed":
             script {
               type 'github.CreatePullRequest'
               server 'XebiaLabs GitHub (from community GitHub plugin)'
+              organization 'xebialabs'
+              repositoryName 'blueprints'
+              title 'Release ${BLUEPRINTS_VERSION}'
+              base 'master'
+              head 'development'
+              body 'Release ${BLUEPRINTS_VERSION}'
             }
           }
           custom('Merge PR development -> master') {
             script {
               type 'github.MergePullRequest'
               server 'XebiaLabs GitHub (from community GitHub plugin)'
+              pullRequestNumber variable('PR_NUMBER')
             }
           }
         }
